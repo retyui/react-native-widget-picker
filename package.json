@@ -1,0 +1,65 @@
+{
+  "name": "react-native-widget-picker",
+  "version": "1.0.0",
+  "license": "MIT",
+  "main": "src",
+  "module": "src",
+  "react-native": "src",
+  "source": "src",
+  "peerDependencies": {
+    "react": ">=16.4.0",
+    "react-native": ">=0.65.0"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    },
+    "react-native": {
+      "optional": true
+    }
+  },
+  "scripts": {
+    "prebuild": "rm -fr dist",
+    "build": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
+    "prepublishOnly": "yarn build"
+  },
+  "author": "David <4661784+retyui@users.noreply.github.com>",
+  "description": "Request to pin an app widget on the current launcher",
+  "homepage": "https://github.com/retyui/react-native-widget-picker#readme",
+  "bugs": "https://github.com/retyui/react-native-widget-picker/issues",
+  "repository": "https://github.com/retyui/react-native-widget-picker",
+  "files": [
+    "dist",
+    "src",
+    "android",
+    "ios",
+    "WidgetPicker.podspec",
+    "!android/build",
+    "!ios/build",
+    "!**/__tests__",
+    "!**/__fixtures__",
+    "!**/__mocks__"
+  ],
+  "codegenConfig": {
+    "name": "WidgetPicker",
+    "type": "all",
+    "jsSrcsDir": "src",
+    "android": {
+      "javaPackageName": "com.retyui.widgetpicker"
+    }
+  },
+  "devDependencies": {
+    "react-native": "^0.72.3",
+    "typescript": "^5.1.6"
+  },
+  "keywords": [
+    "react",
+    "react-native",
+    "react-native-component",
+    "android",
+    "android-widget",
+    "widget",
+    "home-screen",
+    "home-screen-widget"
+  ]
+}
