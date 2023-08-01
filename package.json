@@ -1,9 +1,9 @@
 {
   "name": "react-native-widget-picker",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
-  "main": "src",
-  "module": "src",
+  "main": "dist/cjs",
+  "module": "dist/mjs",
   "react-native": "src",
   "source": "src",
   "peerDependencies": {
