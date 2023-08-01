@@ -1,5 +1,8 @@
 package com.retyui.widgetpicker
 
+import android.os.Build
+import androidx.annotation.RequiresApi
+import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReactContextBaseJavaModule
 import com.facebook.react.bridge.ReactMethod
@@ -17,11 +20,11 @@ class WidgetPickerModule(
     override fun getName() = NAME
 
     @ReactMethod(isBlockingSynchronousMethod = true)
-    override fun isRequestPinAppWidgetSupported() = moduleImpl.isRequestPinAppWidgetSupported()
+    fun isRequestPinAppWidgetSupported() = moduleImpl.isRequestPinAppWidgetSupported()
 
     @ReactMethod
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun requestPinAppWidget(widgetClassKey: String, promise: Promise) = moduleImpl.requestPinAppWidget(widgetClassKey, promise)
+    fun requestPinAppWidget(widgetClassKey: String, promise: Promise) = moduleImpl.requestPinAppWidget(widgetClassKey, promise)
 
     companion object {
         const val NAME = WidgetPickerModuleImpl.NAME
