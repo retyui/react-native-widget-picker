@@ -24,13 +24,15 @@ npm install react-native-widget-picker
 Edit `android/app/src/main/java/com/.../MainActivity.java` and add:
 
 ```diff
++import com.retyui.widgetpicker.WidgetPickerModuleImpl;
+
 public class MainActivity extends ReactActivity {
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 +    WidgetPickerModuleImpl.registerWidgetClass("MyAppWidget", MyAppWidget.class);
-  // you can register multiple widgets ^^^ 
+    // you can register multiple widgets ^^^ 
   }
 ```
 
@@ -41,7 +43,7 @@ import {WidgetPicker} from 'react-native-widget-picker';
 
 WidgetPicker.isRequestPinAppWidgetSupported() // true or false
 
-WidgetPicker.requestPinAppWidget("MyAppWidget").then((value) => {
+WidgetPicker.requestPinAppWidget("MyAppWidget").then((value) => { // "MyAppWidget" - name from MainActivity.java
     if (value.message === "success") {
         // success
     }
