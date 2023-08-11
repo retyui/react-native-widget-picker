@@ -8,7 +8,7 @@
 Let users pin a widget. On devices running Android 8.0 (API level 26) and higher, launchers that
 let [pin widgets](https://developer.android.com/develop/ui/views/appwidgets/configuration) onto their home screen
 
-https://github.com/retyui/react-quick-pinch-zoom/assets/4661784/e7aff504-4299-4034-9b9f-8f7f6c854578
+https://github.com/retyui/react-native-detect-maestro/assets/4661784/e301602d-d82e-4f5f-b259-1bae3677b868
 
 ## Getting started
 
