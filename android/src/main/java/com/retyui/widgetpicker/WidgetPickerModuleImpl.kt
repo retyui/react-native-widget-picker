@@ -25,14 +25,31 @@ class WidgetPickerModuleImpl(private val reactContext: ReactApplicationContext) 
     @RequiresApi(Build.VERSION_CODES.O)
     fun requestPinAppWidget(widgetClassKey: String, promise: Promise) {
         try {
+            if (isRequestPinAppWidgetSupported().not()) {
+                promise.resolve(Arguments.createMap().apply {
+                    putString("message", "not supported")
+                })
+                return
+            }
+
             val appWidgetManager: AppWidgetManager = reactContext.getSystemService(AppWidgetManager::class.java)
-            val myProvider = ComponentName(reactContext, widgets[widgetClassKey]!!)
-            val result = appWidgetManager.requestPinAppWidget(myProvider, null, null)
-            if(result){
+
+            val widgetClass = widgets[widgetClassKey];
+
+            if (widgetClass == null) {
+                promise.resolve(Arguments.createMap().apply {
+                    putString("message", "widget not found")
+                })
+                return
+            }
+
+            val provider = ComponentName(reactContext, widgetClass)
+            val result = appWidgetManager.requestPinAppWidget(provider, null, null)
+            if (result) {
                 promise.resolve(Arguments.createMap().apply {
                     putString("message", "success")
                 })
-            }else{
+            } else {
                 promise.resolve(Arguments.createMap().apply {
                     // launcher doesn't support this feature
                     // or widget not found
