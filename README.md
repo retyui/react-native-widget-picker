@@ -36,6 +36,19 @@ public class MainActivity extends ReactActivity {
   }
 ```
 
+Kotlin `MainActivity.kt` example:
+
+```diff
++import com.retyui.widgetpicker.WidgetPickerModuleImpl.Companion.registerWidgetClass
+
+class MainActivity : ReactActivity() {
++  override fun onCreate(savedInstanceState: Bundle?) {
++    super.onCreate(savedInstanceState)
++    registerWidgetClass("MyAppWidget", MyAppWidget::class.java)
++  }
+}
+```
+
 ## Usage
 
 ```tsx
@@ -43,7 +56,9 @@ import {WidgetPicker} from 'react-native-widget-picker';
 
 WidgetPicker.isRequestPinAppWidgetSupported() // true or false
 
-WidgetPicker.requestPinAppWidget("MyAppWidget").then((value) => { // "MyAppWidget" - name from MainActivity.java
+// "MyAppWidget" - name from MainActivity.java or .kt
+WidgetPicker.requestPinAppWidget("MyAppWidget").then((value) => {
+    
     if (value.message === "success") {
         // success
     }
