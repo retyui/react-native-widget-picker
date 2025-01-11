@@ -1,4 +1,4 @@
-name: Build Android
+name: Build Android App
 
 on: [push]
 
@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         new_arch_enabled: [1, 0]
-        rn_ver: [latest, 0.75-stable, 0.74-stable, 0.73-stable, 0.72.17, 0.71.19, 0.70.15, 0.69.12]
+        rn_ver: [latest, 0.75-stable, 0.74-stable, 0.73-stable, 0.72.17, 0.71.19]
 
     runs-on: ubuntu-24.04
 
@@ -21,16 +21,16 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Setup Java 17
+      - name: Setup Java 19
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
-          java-version: 17
+          java-version: 19
 
-      - name: Setup Node.js 20
+      - name: Setup Node.js 22
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
 
       - name: Build Tmp React Native App
         env:
