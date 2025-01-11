@@ -11,9 +11,9 @@ jobs:
       fail-fast: false
       matrix:
         new_arch_enabled: [1, 0]
-        rn_ver: [0.73.4, 0.72.10, 0.71.16, 0.70.15, 0.69.12] #, 0.68.7, 0.67.5, 0.66.5, 0.65.3
+        rn_ver: [latest, 0.75-stable, 0.74-stable, 0.73-stable, 0.72.17, 0.71.19, 0.70.15, 0.69.12]
 
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout repository
