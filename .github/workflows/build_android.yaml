@@ -40,7 +40,7 @@ jobs:
           cd /tmp
 
           # Create new tmp React Native
-          npx react-native@${{ matrix.rn_ver }} init $RN_APP_NAME --version ${{ matrix.rn_ver }}
+          npx @react-native-community/cli@latest init $RN_APP_NAME --version ${{ matrix.rn_ver }}
           cd $RN_APP_NAME
 
           # Install my module
