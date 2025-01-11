@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         new_arch_enabled: [1, 0]
-        rn_ver: [latest, 0.75-stable, 0.74-stable, 0.73-stable, 0.72-stablу]
+        rn_ver: [latest, 0.75-stable, 0.74-stable, 0.73-stable, 0.72-stable]
 
     runs-on: ubuntu-24.04
 
