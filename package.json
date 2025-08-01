@@ -1,6 +1,6 @@
 {
   "name": "react-native-widget-picker",
-  "version": "1.0.3",
+  "version": "1.1.0",
   "license": "MIT",
   "main": "dist/cjs",
   "module": "dist/mjs",
@@ -8,7 +8,7 @@
   "source": "src",
   "peerDependencies": {
     "react": ">=16.4.0",
-    "react-native": ">=0.65.0"
+    "react-native": ">=0.72.0"
   },
   "peerDependenciesMeta": {
     "react": {
@@ -32,8 +32,6 @@
     "dist",
     "src",
     "android",
-    "ios",
-    "WidgetPicker.podspec",
     "!android/build",
     "!ios/build",
     "!**/__tests__",
@@ -42,15 +40,15 @@
   ],
   "codegenConfig": {
     "name": "WidgetPicker",
-    "type": "all",
+    "type": "modules",
     "jsSrcsDir": "src",
     "android": {
       "javaPackageName": "com.retyui.widgetpicker"
     }
   },
   "devDependencies": {
-    "react-native": "^0.72.3",
-    "typescript": "^5.1.6"
+    "react-native": "^0.80.2",
+    "typescript": "^5.9.2"
   },
   "keywords": [
     "react",

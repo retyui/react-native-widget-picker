@@ -11,7 +11,7 @@ jobs:
       fail-fast: false
       matrix:
         new_arch_enabled: [1, 0]
-        rn_ver: [latest, 0.75-stable, 0.74-stable, 0.73-stable, 0.72-stable]
+        rn_ver: [ 0.80.2, 0.79-stable, 0.78-stable, 0.77-stable, 0.76-stable, 0.75-stable, 0.74-stable, 0.73-stable ]
 
     runs-on: ubuntu-24.04
 
@@ -52,6 +52,9 @@ jobs:
           # Enable new arch for Android
           if [[ $RCT_NEW_ARCH_ENABLED == '1' ]]; then
             sed -i 's/newArchEnabled=false/newArchEnabled=true/' android/gradle.properties
+          ./android/gradlew generateCodegenArtifactsFromSchema -p android
+          else
+            sed -i 's/newArchEnabled=true/newArchEnabled=false/' android/gradle.properties
           fi
 
           # Build Android App

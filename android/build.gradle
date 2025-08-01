@@ -3,14 +3,14 @@ buildscript {
         rootProject.ext.has(prop) ? rootProject.ext.get(prop) : fallback
     }
 
-    def kotlin_version = safeExtGet('kotlinVersion', '1.7.0')
+    def kotlin_version = safeExtGet('kotlinVersion', '2.1.20')
 
     repositories {
         google()
         gradlePluginPortal()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:7.2.1")
+        classpath("com.android.tools.build:gradle:8.4.1")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
     }
 }
@@ -40,15 +40,20 @@ def supportsNamespace() {
 }
 
 android {
-    compileSdkVersion safeExtGet('compileSdkVersion', 33)
+    compileSdkVersion safeExtGet('compileSdkVersion', 35)
 
     if (supportsNamespace()) {
         namespace "com.retyui.widgetpicker"
+        sourceSets {
+            main {
+                manifest.srcFile "src/main/AndroidManifestNew.xml"
+            }
+        }
     }
 
     defaultConfig {
-        minSdkVersion safeExtGet('minSdkVersion', 21)
-        targetSdkVersion safeExtGet('targetSdkVersion', 33)
+        minSdkVersion safeExtGet('minSdkVersion', 24)
+        targetSdkVersion safeExtGet('targetSdkVersion', 34)
         buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
     }
 
@@ -91,7 +96,7 @@ repositories {
 
 apply from: "$projectDir/react-native-helpers.gradle"
 
-def kotlin_ver = safeExtGet('kotlinVersion', '1.7.0')
+def kotlin_ver = safeExtGet('kotlinVersion', '2.1.20')
 
 dependencies {
     if (project.ext.shouldConsumeReactNativeFromMavenCentral()) {
