@@ -1,1 +1,1 @@
-export {default as WidgetPicker} from './NativeWidgetPickerModule';
+export { default as WidgetPicker } from "./NativeWidgetPickerModule";
