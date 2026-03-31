@@ -8,8 +8,8 @@ import com.facebook.react.module.annotations.ReactModule
 
 @ReactModule(name = WidgetPickerModule.NAME)
 class WidgetPickerModule(
-        // Each native module class consumes react application context
-        reactContext: ReactApplicationContext
+    // Each native module class consumes react application context
+    reactContext: ReactApplicationContext
 ) : NativeWidgetPickerModuleSpec(reactContext) {
     // Use shared module implementation and forward react application context
     private val moduleImpl = WidgetPickerModuleImpl(reactContext)
@@ -21,7 +21,8 @@ class WidgetPickerModule(
     override fun isRequestPinAppWidgetSupported() = moduleImpl.isRequestPinAppWidgetSupported()
 
     @RequiresApi(Build.VERSION_CODES.O)
-    override fun requestPinAppWidget(widgetClassKey: String, promise: Promise) = moduleImpl.requestPinAppWidget(widgetClassKey, promise)
+    override fun requestPinAppWidget(widgetClassKey: String, promise: Promise) =
+        moduleImpl.requestPinAppWidget(widgetClassKey, promise)
 
     companion object {
         const val NAME = WidgetPickerModuleImpl.NAME

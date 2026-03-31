@@ -24,7 +24,8 @@ class WidgetPickerModule(
 
     @ReactMethod
     @RequiresApi(Build.VERSION_CODES.O)
-    fun requestPinAppWidget(widgetClassKey: String, promise: Promise) = moduleImpl.requestPinAppWidget(widgetClassKey, promise)
+    fun requestPinAppWidget(widgetClassKey: String, promise: Promise) =
+        moduleImpl.requestPinAppWidget(widgetClassKey, promise)
 
     companion object {
         const val NAME = WidgetPickerModuleImpl.NAME

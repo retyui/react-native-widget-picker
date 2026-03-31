@@ -4,6 +4,7 @@ buildscript {
     }
 
     def kotlin_version = safeExtGet('kotlinVersion', '2.1.20')
+    def spotless_version = safeExtGet('spotlessVersion', '8.4.0')
 
     repositories {
         google()
@@ -12,11 +13,16 @@ buildscript {
     dependencies {
         classpath("com.android.tools.build:gradle:8.4.1")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
+        classpath "com.diffplug.spotless:spotless-plugin-gradle:$spotless_version"
     }
 }
 
 def isNewArchitectureEnabled() {
     return project.hasProperty("newArchEnabled") && project.newArchEnabled == "true"
+}
+
+if (project == rootProject) {
+  apply from: 'spotless.gradle'
 }
 
 apply plugin: 'com.android.library'
@@ -59,6 +65,10 @@ android {
 
     lintOptions {
         disable "GradleCompatible"
+    }
+
+    buildFeatures {
+      buildConfig true
     }
 
     buildTypes {

@@ -6,7 +6,31 @@ env:
   RN_APP_NAME: MyApp
 
 jobs:
+  link_android:
+    name: Lint Android
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+      - name: Setup Java 19
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: 19
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+
+      - run: yarn install
+
+      - run: yarn lint:android
+
   build_app:
+    name: Build RN@${{ matrix.rn_ver }}-${{ matrix.new_arch_enabled }}
     strategy:
       fail-fast: false
       matrix:

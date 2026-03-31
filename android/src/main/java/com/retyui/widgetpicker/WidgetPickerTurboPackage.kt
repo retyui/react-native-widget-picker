@@ -9,9 +9,7 @@ import com.facebook.react.module.model.ReactModuleInfoProvider
 import com.facebook.react.turbomodule.core.interfaces.TurboModule
 
 class WidgetPickerTurboPackage : TurboReactPackage() {
-    /**
-     * Initialize and export modules based on the name of the required module
-     */
+    /** Initialize and export modules based on the name of the required module */
     override fun getModule(name: String, reactContext: ReactApplicationContext): NativeModule? {
         return when (name) {
             WidgetPickerModule.NAME -> WidgetPickerModule(reactContext)
@@ -19,32 +17,24 @@ class WidgetPickerTurboPackage : TurboReactPackage() {
         }
     }
 
-    /**
-     * Declare info about exported modules
-     */
+    /** Declare info about exported modules */
     override fun getReactModuleInfoProvider(): ReactModuleInfoProvider {
-        /**
-         * Here declare the array of exported modules
-         */
-        val moduleList: Array<Class<out NativeModule?>> = arrayOf(
-                WidgetPickerModule::class.java
-        )
+        /** Here declare the array of exported modules */
+        val moduleList: Array<Class<out NativeModule?>> = arrayOf(WidgetPickerModule::class.java)
         val reactModuleInfoMap: MutableMap<String, ReactModuleInfo> = HashMap()
-        /**
-         * And here just iterate on that array and produce the info provider instance
-         */
+        /** And here just iterate on that array and produce the info provider instance */
         for (moduleClass in moduleList) {
             val reactModule = moduleClass.getAnnotation(ReactModule::class.java) ?: continue
             reactModuleInfoMap[reactModule.name] =
-                    ReactModuleInfo(
-                            reactModule.name,
-                            moduleClass.name,
-                            true,
-                            reactModule.needsEagerInit,
-                            reactModule.hasConstants,
-                            reactModule.isCxxModule,
-                            TurboModule::class.java.isAssignableFrom(moduleClass)
-                    )
+                ReactModuleInfo(
+                    reactModule.name,
+                    moduleClass.name,
+                    true,
+                    reactModule.needsEagerInit,
+                    reactModule.hasConstants,
+                    reactModule.isCxxModule,
+                    TurboModule::class.java.isAssignableFrom(moduleClass)
+                )
         }
         return ReactModuleInfoProvider { reactModuleInfoMap }
     }

@@ -23,6 +23,8 @@
     "before-build": "rm -fr dist",
     "build": "yarn before-build && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json && yarn after-build",
     "after-build": "prettier --write ./dist --ignore-path .skip",
+    "lint:android": "./android/gradlew -p android spotlessCheck --quiet",
+    "format:android": "./android/gradlew -p android spotlessapply",
     "prepublishOnly": "yarn build"
   },
   "author": "David <4661784+retyui@users.noreply.github.com>",
