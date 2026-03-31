@@ -59,5 +59,6 @@
     "widget",
     "home-screen",
     "home-screen-widget"
-  ]
+  ],
+  "packageManager": "yarn@4.13.0"
 }

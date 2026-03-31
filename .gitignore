@@ -65,3 +65,12 @@ yarn-error.log
 # testing
 /coverage
 /dist
+
+
+# Yarn berry
+.yarn/*
+!.yarn/patches
+!.yarn/releases
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
