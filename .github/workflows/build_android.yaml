@@ -11,26 +11,26 @@ jobs:
       fail-fast: false
       matrix:
         new_arch_enabled: [1, 0]
-        rn_ver: [ 0.80.2, 0.79-stable, 0.78-stable, 0.77-stable, 0.76-stable, 0.75-stable, 0.74-stable, 0.73-stable ]
+        rn_ver: [0.84.1, 0.83.4, 0.82.1, 0.81.6, 0.80.3, 0.79.7, 0.78.3]
 
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 1
 
       - name: Setup Java 19
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v5
         with:
           distribution: 'temurin'
           java-version: 19
 
       - name: Setup Node.js 22
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: 24
 
       - name: Build Tmp React Native App
         env:
