@@ -19,8 +19,8 @@
     }
   },
   "scripts": {
-    "prebuild": "rm -fr dist",
-    "build": "tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
+    "before-build": "rm -fr dist",
+    "build": "yarn before-build && tsc -p tsconfig.json && tsc -p tsconfig-cjs.json",
     "prepublishOnly": "yarn build"
   },
   "author": "David <4661784+retyui@users.noreply.github.com>",
@@ -47,8 +47,8 @@
     }
   },
   "devDependencies": {
-    "react-native": "^0.80.2",
-    "typescript": "^5.9.2"
+    "react-native": "^0.84.1",
+    "typescript": "^6.0.2"
   },
   "keywords": [
     "react",
