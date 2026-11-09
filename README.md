@@ -24,9 +24,10 @@ npm install react-native-widget-picker
 That's it: widgets are found by their `AppWidgetProvider` class name (simple or fully
 qualified), e.g. `"MyAppWidget"` or `"com.myapp.MyAppWidget"`.
 
-### Custom keys (optional)
+<details>
+<summary>Use a custom key</summary>
 
-To use a different key, register the class, e.g. in `MainActivity.kt`:
+Register the widget class, e.g. in `MainActivity.kt`:
 
 ```kotlin
 import com.retyui.widgetpicker.WidgetPickerModuleImpl.Companion.registerWidgetClass
@@ -38,6 +39,8 @@ class MainActivity : ReactActivity() {
   }
 }
 ```
+
+</details>
 
 ## Usage
 
