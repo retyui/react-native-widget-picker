@@ -67,6 +67,8 @@ android {
         warningsAsErrors true
         // Versions of AGP/Kotlin/RN are controlled by the host app
         disable "GradleDependency", "AndroidGradlePluginVersion", "NewerVersionAvailable"
+        // Only reported for codegen-generated Java; our sources are Kotlin
+        disable "UnknownNullness"
     }
 
     buildTypes {
@@ -91,24 +93,12 @@ android {
 }
 
 repositories {
-    maven {
-        url "$projectDir/../node_modules/react-native/android"
-    }
     mavenCentral()
     google()
 }
 
-apply from: "$projectDir/react-native-helpers.gradle"
-
-def kotlin_ver = safeExtGet('kotlinVersion', '2.1.20')
-
 dependencies {
-    if (project.ext.shouldConsumeReactNativeFromMavenCentral()) {
-        implementation "com.facebook.react:react-android" // Set by the React Native Gradle Plugin
-    } else {
-        implementation 'com.facebook.react:react-native:+' // From node_modules
-        implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_ver"
-    }
+    implementation "com.facebook.react:react-android" // Version set by the React Native Gradle Plugin
 }
 
 if (isConsumedByApp) {

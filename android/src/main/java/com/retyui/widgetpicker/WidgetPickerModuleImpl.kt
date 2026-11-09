@@ -188,7 +188,8 @@ class WidgetPickerModuleImpl(private val reactContext: ReactApplicationContext) 
         return PendingIntent.getBroadcast(reactContext, 0, intent, flags)
     }
 
-    private fun settle(appWidgetId: Int) {
+    // internal (not private): called from pinnedReceiver without a synthetic accessor
+    internal fun settle(appWidgetId: Int) {
         val current = pending ?: return
         pending = null
         unregisterReceiverIfNeeded()
@@ -200,7 +201,7 @@ class WidgetPickerModuleImpl(private val reactContext: ReactApplicationContext) 
         )
     }
 
-    private fun settleFromWidgetIds() {
+    internal fun settleFromWidgetIds() {
         val current = pending ?: return
         val newId =
             try {
