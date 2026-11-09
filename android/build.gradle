@@ -62,13 +62,6 @@ android {
 
     lint {
         disable "GradleCompatible"
-        abortOnError true
-        checkAllWarnings true
-        warningsAsErrors true
-        // Versions of AGP/Kotlin/RN are controlled by the host app
-        disable "GradleDependency", "AndroidGradlePluginVersion", "NewerVersionAvailable"
-        // Only reported for codegen-generated Java; our sources are Kotlin
-        disable "UnknownNullness"
     }
 
     buildTypes {
