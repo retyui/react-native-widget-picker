@@ -30,12 +30,11 @@ jobs:
       - run: yarn lint:android
 
   build_app:
-    name: Build RN@${{ matrix.rn_ver }}-${{ matrix.new_arch_enabled }}
+    name: Build RN@${{ matrix.rn_ver }}
     strategy:
       fail-fast: false
       matrix:
-        new_arch_enabled: [1, 0]
-        rn_ver: [0.84.1, 0.83.4, 0.82.1, 0.81.6, 0.80.3, 0.79.7, 0.78.3]
+        rn_ver: [0.89.0-rc.0, 0.88.1, 0.87.1, 0.86.3, 0.85.3, 0.84.1, 0.83.10, 0.82.1, 0.81.6, 0.80.3]
 
     runs-on: ubuntu-latest
 
@@ -57,9 +56,6 @@ jobs:
           node-version: 24
 
       - name: Build Tmp React Native App
-        env:
-          # enable new arch for iOS
-          RCT_NEW_ARCH_ENABLED: ${{ matrix.new_arch_enabled }}
         run: |
           cd /tmp
 
@@ -73,13 +69,9 @@ jobs:
           # Debug info
           npx react-native info
 
-          # Enable new arch for Android
-          if [[ $RCT_NEW_ARCH_ENABLED == '1' ]]; then
-            sed -i 's/newArchEnabled=false/newArchEnabled=true/' android/gradle.properties
+          # Make sure new arch is enabled (it is opt-out on RN < 0.82)
+          sed -i 's/newArchEnabled=false/newArchEnabled=true/' android/gradle.properties
           ./android/gradlew generateCodegenArtifactsFromSchema -p android
-          else
-            sed -i 's/newArchEnabled=true/newArchEnabled=false/' android/gradle.properties
-          fi
 
           # Build Android App
           ./android/gradlew assembleRelease -p android -PreactNativeArchitectures=x86_64

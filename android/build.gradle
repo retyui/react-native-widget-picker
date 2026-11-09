@@ -17,10 +17,6 @@ buildscript {
     }
 }
 
-def isNewArchitectureEnabled() {
-    return project.hasProperty("newArchEnabled") && project.newArchEnabled == "true"
-}
-
 if (project == rootProject) {
   apply from: 'spotless.gradle'
 }
@@ -28,7 +24,9 @@ if (project == rootProject) {
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
-if (isNewArchitectureEnabled()) {
+// Standalone (root) project is only used for linting and has no RN Gradle plugin on its classpath
+def isConsumedByApp = project != rootProject
+if (isConsumedByApp) {
     apply plugin: "com.facebook.react"
 }
 
@@ -60,15 +58,10 @@ android {
     defaultConfig {
         minSdkVersion safeExtGet('minSdkVersion', 24)
         targetSdkVersion safeExtGet('targetSdkVersion', 34)
-        buildConfigField "boolean", "IS_NEW_ARCHITECTURE_ENABLED", isNewArchitectureEnabled().toString()
     }
 
     lintOptions {
         disable "GradleCompatible"
-    }
-
-    buildFeatures {
-      buildConfig true
     }
 
     buildTypes {
@@ -84,11 +77,7 @@ android {
 
     sourceSets {
         main {
-            if (isNewArchitectureEnabled()) {
-                java.srcDirs += ['src/newarch/java', "${project.buildDir}/generated/source/codegen/java"]
-            } else {
-                java.srcDirs += ['src/oldarch/java']
-            }
+            java.srcDirs += ["${project.buildDir}/generated/source/codegen/java"]
             if (!supportsNamespace()) {
                 manifest.srcFile "src/main/AndroidManifest.xml"
             }
@@ -117,7 +106,7 @@ dependencies {
     }
 }
 
-if (isNewArchitectureEnabled()) {
+if (isConsumedByApp) {
     react {
         jsRootDir = file("../src/")
         libraryName = "WidgetPicker"

@@ -13,7 +13,7 @@ https://github.com/retyui/react-native-detect-maestro/assets/4661784/e301602d-d8
 ## Getting started
 
 * Android only
-* support React Native's New & Old Architecture
+* React Native's New Architecture only (RN 0.80+). Use `1.x` for the old architecture
 
 ```shell
 yarn add react-native-widget-picker
@@ -21,49 +21,69 @@ yarn add react-native-widget-picker
 npm install react-native-widget-picker
 ```
 
-Edit `android/app/src/main/java/com/.../MainActivity.java` and add:
+That's it: widgets are found by their `AppWidgetProvider` class name (simple or fully
+qualified), e.g. `"MyAppWidget"` or `"com.myapp.MyAppWidget"`.
 
-```diff
-+import com.retyui.widgetpicker.WidgetPickerModuleImpl;
+### Custom keys (optional)
 
-public class MainActivity extends ReactActivity {
+To use a different key, register the class, e.g. in `MainActivity.kt`:
 
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-+    WidgetPickerModuleImpl.registerWidgetClass("MyAppWidget", MyAppWidget.class);
-    // you can register multiple widgets ^^^ 
-  }
-```
-
-Kotlin `MainActivity.kt` example:
-
-```diff
-+import com.retyui.widgetpicker.WidgetPickerModuleImpl.Companion.registerWidgetClass
+```kotlin
+import com.retyui.widgetpicker.WidgetPickerModuleImpl.Companion.registerWidgetClass
 
 class MainActivity : ReactActivity() {
-+  override fun onCreate(savedInstanceState: Bundle?) {
-+    super.onCreate(savedInstanceState)
-+    registerWidgetClass("MyAppWidget", MyAppWidget::class.java)
-+  }
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    registerWidgetClass("weather", MyAppWidget::class.java)
+  }
 }
 ```
 
 ## Usage
 
 ```tsx
-import {WidgetPicker} from 'react-native-widget-picker';
+import { WidgetPicker, WidgetPickerErrorCode } from "react-native-widget-picker";
 
-WidgetPicker.isRequestPinAppWidgetSupported() // true or false
+WidgetPicker.isRequestPinAppWidgetSupported(); // true or false
 
-// "MyAppWidget" - name from MainActivity.java or .kt
-WidgetPicker.requestPinAppWidget("MyAppWidget").then((value) => {
-    
-    if (value.message === "success") {
-        // success
-    }
+try {
+  const result = await WidgetPicker.requestPinAppWidget("MyAppWidget");
+
+  if (result.status === "pinned") {
+    console.log("Added, appWidgetId:", result.appWidgetId);
+  } else {
+    // result.status === "cancelled": the user dismissed the dialog
+  }
+} catch (error) {
+  switch (error.code) {
+    case WidgetPickerErrorCode.NOT_SUPPORTED: // Android < 8 or the launcher can't pin widgets
+    case WidgetPickerErrorCode.WIDGET_NOT_FOUND: // no widget matches "MyAppWidget"
+    case WidgetPickerErrorCode.INVALID_PREVIEW: // `previewLayout` isn't a layout resource
+    case WidgetPickerErrorCode.PIN_FAILED: // the launcher refused the request
+  }
+}
+
+// Custom preview in the pin dialog (res/layout/my_widget_preview.xml)
+await WidgetPicker.requestPinAppWidget("MyAppWidget", {
+  previewLayout: "my_widget_preview",
 });
+
+// Is the widget already on the home screen? (e.g. to hide an "Add widget" button)
+await WidgetPicker.isWidgetPinned("MyAppWidget"); // true or false
+await WidgetPicker.getPinnedWidgetIds("MyAppWidget"); // [12, 15]
 ```
+
+The promise resolves when the user adds the widget or closes the dialog. If the user drags the
+widget onto the home screen instead, it resolves once the widget is placed or the app is back in
+the foreground.
+
+## Migrating from 1.x
+
+* Old architecture is no longer supported
+* `requestPinAppWidget` resolves with `{ status: "pinned", appWidgetId } | { status: "cancelled" }`
+  instead of `{ message }`; errors (`"not supported"`, `"widget not found"`, `"cannot pin widget"`)
+  now reject with a `code`
+* `registerWidgetClass` is optional
 
 ## License
 

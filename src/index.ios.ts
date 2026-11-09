@@ -1,5 +1,18 @@
-export const WidgetPicker = {
+import { WidgetPickerErrorCode } from "./types";
+import type { WidgetPickerApi } from "./types";
+
+export * from "./types";
+
+const notSupported = () =>
+  Promise.reject(
+    Object.assign(new Error("Pinning widgets is not supported on iOS"), {
+      code: WidgetPickerErrorCode.NOT_SUPPORTED,
+    }),
+  );
+
+export const WidgetPicker: WidgetPickerApi = {
   isRequestPinAppWidgetSupported: () => false,
-  requestPinAppWidget: (widgetClassKey: string) =>
-    Promise.resolve({ message: "not supported on ios" }),
-} as const;
+  requestPinAppWidget: notSupported,
+  getPinnedWidgetIds: () => Promise.resolve([]),
+  isWidgetPinned: () => Promise.resolve(false),
+};
