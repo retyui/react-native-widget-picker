@@ -1,36 +1,89 @@
 name: Build Android App
 
-on: [push]
+on: [push, pull_request]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 env:
   RN_APP_NAME: MyApp
+  JAVA_VERSION: 21
+  NODE_VERSION: 24
 
 jobs:
-  link_android:
-    name: Lint Android
+  lint_js:
+    name: Lint JS
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 1
-      - name: Setup Java 19
-        uses: actions/setup-java@v5
-        with:
-          distribution: 'temurin'
-          java-version: 19
 
-      - name: Setup Node.js 22
-        uses: actions/setup-node@v6
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
         with:
-          node-version: 24
+          node-version: ${{ env.NODE_VERSION }}
 
-      - run: yarn install
+      - run: yarn install --immutable
+
+      - name: Typecheck
+        run: yarn typecheck
+
+      - name: Prettier
+        run: yarn format:check
+
+      - name: Build
+        run: yarn build
+
+  lint_android:
+    name: Lint Android (Spotless)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - name: Setup Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - run: yarn install --immutable
 
       - run: yarn lint:android
 
+  lint_actions:
+    name: Lint GitHub Actions
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - name: actionlint
+        uses: docker://rhysd/actionlint:1.7.12
+        with:
+          args: -color
+
   build_app:
     name: Build RN@${{ matrix.rn_ver }}
+    needs: [lint_js, lint_android]
     strategy:
       fail-fast: false
       matrix:
@@ -40,38 +93,52 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 1
 
-      - name: Setup Java 19
-        uses: actions/setup-java@v5
+      - name: Setup Java
+        uses: actions/setup-java@v6
         with:
-          distribution: 'temurin'
-          java-version: 19
+          distribution: temurin
+          java-version: ${{ env.JAVA_VERSION }}
 
-      - name: Setup Node.js 22
-        uses: actions/setup-node@v6
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
         with:
-          node-version: 24
+          node-version: ${{ env.NODE_VERSION }}
 
-      - name: Build Tmp React Native App
+      - name: Create Tmp React Native App
+        working-directory: /tmp
         run: |
-          cd /tmp
-
           # Create new tmp React Native
-          npx @react-native-community/cli@latest init $RN_APP_NAME --version ${{ matrix.rn_ver }}
-          cd $RN_APP_NAME
+          npx @react-native-community/cli@latest init "$RN_APP_NAME" --version ${{ matrix.rn_ver }} --skip-git-init --install-pods false
+          cd "$RN_APP_NAME"
 
           # Install my module
-          yarn add file:${{ github.workspace }}
+          yarn add "file:${{ github.workspace }}"
 
           # Debug info
           npx react-native info
 
           # Make sure new arch is enabled (it is opt-out on RN < 0.82)
           sed -i 's/newArchEnabled=false/newArchEnabled=true/' android/gradle.properties
-          ./android/gradlew generateCodegenArtifactsFromSchema -p android
 
-          # Build Android App
-          ./android/gradlew assembleRelease -p android -PreactNativeArchitectures=x86_64
+      - name: Android Lint
+        working-directory: /tmp/${{ env.RN_APP_NAME }}
+        run: ./android/gradlew -p android :react-native-widget-picker:lintRelease
+
+      - name: Build Android App
+        working-directory: /tmp/${{ env.RN_APP_NAME }}
+        run: ./android/gradlew -p android assembleRelease -PreactNativeArchitectures=x86_64
+
+      - name: Upload lint report
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: lint-report-${{ matrix.rn_ver }}
+          path: /tmp/${{ env.RN_APP_NAME }}/node_modules/react-native-widget-picker/android/build/reports/lint-results-release.*
+          if-no-files-found: ignore

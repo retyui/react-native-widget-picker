@@ -7,8 +7,7 @@ export type PinWidgetOptions = {
 };
 
 export type PinWidgetResult =
-  | { status: "pinned"; appWidgetId: number }
-  | { status: "cancelled" };
+  { status: "pinned"; appWidgetId: number } | { status: "cancelled" };
 
 /** `code` of the error a rejected promise carries. */
 export const WidgetPickerErrorCode = {

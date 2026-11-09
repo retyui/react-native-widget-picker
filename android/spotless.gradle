@@ -1,16 +1,18 @@
-// formatter & linter configuration for kotlin
+// formatter & linter configuration for java & kotlin
 apply plugin: 'com.diffplug.spotless'
 
 spotless {
   java {
-    target 'src/*/java/**/*.java'
-    googleJavaFormat()
+    target 'src/**/*.java'
+    googleJavaFormat('2.0.0')
+    trimTrailingWhitespace()
+    endWithNewline()
   }
   kotlin {
     target 'src/**/*.kt'
-    ktfmt('0.46').kotlinlangStyle()
+    ktfmt('0.64').kotlinlangStyle()
     trimTrailingWhitespace()
-    indentWithSpaces()
+    leadingTabsToSpaces()
     endWithNewline()
   }
 }

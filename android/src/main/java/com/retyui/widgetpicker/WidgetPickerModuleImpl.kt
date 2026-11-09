@@ -120,7 +120,7 @@ class WidgetPickerModuleImpl(private val reactContext: ReactApplicationContext) 
                     PendingPin(
                         promise,
                         provider,
-                        appWidgetManager.getAppWidgetIds(provider).toSet()
+                        appWidgetManager.getAppWidgetIds(provider).toSet(),
                     )
 
                 val requested =

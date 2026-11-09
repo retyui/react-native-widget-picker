@@ -1,33 +1,15 @@
 {
   "compilerOptions": {
-    "allowJs": true,
-    "allowSyntheticDefaultImports": true,
     "declaration": true,
-    "esModuleInterop": true,
-    "inlineSourceMap": false,
-    "lib": [
-      "esnext"
-    ],
-    "listEmittedFiles": false,
-    "listFiles": false,
+    "lib": ["esnext"],
     "moduleResolution": "bundler",
     "noFallthroughCasesInSwitch": true,
-    "pretty": true,
     "resolveJsonModule": true,
     "rootDir": "src",
     "skipLibCheck": true,
     "strict": true,
-    "traceResolution": false,
-    "types": [
-      "react-native"
-    ]
+    "types": ["react-native"]
   },
-  "compileOnSave": false,
-  "exclude": [
-    "node_modules",
-    "dist"
-  ],
-  "include": [
-    "src"
-  ]
+  "exclude": ["node_modules", "dist"],
+  "include": ["src"]
 }

@@ -4,7 +4,7 @@ buildscript {
     }
 
     def kotlin_version = safeExtGet('kotlinVersion', '2.1.20')
-    def spotless_version = safeExtGet('spotlessVersion', '8.4.0')
+    def spotless_version = safeExtGet('spotlessVersion', '8.11.0')
 
     repositories {
         google()
@@ -60,8 +60,13 @@ android {
         targetSdkVersion safeExtGet('targetSdkVersion', 34)
     }
 
-    lintOptions {
+    lint {
         disable "GradleCompatible"
+        abortOnError true
+        checkAllWarnings true
+        warningsAsErrors true
+        // Versions of AGP/Kotlin/RN are controlled by the host app
+        disable "GradleDependency", "AndroidGradlePluginVersion", "NewerVersionAvailable"
     }
 
     buildTypes {
