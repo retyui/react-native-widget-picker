@@ -41,6 +41,9 @@
     "dist",
     "src",
     "android",
+    "ios",
+    "*.podspec",
+    "Package.swift",
     "!android/build",
     "!ios/build",
     "!**/__tests__",
@@ -53,7 +56,15 @@
     "jsSrcsDir": "src",
     "android": {
       "javaPackageName": "com.retyui.widgetpicker"
+    },
+    "ios": {
+      "modulesProvider": {
+        "WidgetPickerIOSModule": "WidgetPickerIOSModule"
+      }
     }
+  },
+  "swiftpmConfig": {
+    "name": "ReactNativeWidgetPicker"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^1.0.1",
@@ -68,6 +79,8 @@
     "react",
     "react-native",
     "react-native-component",
+    "ios",
+    "widgetkit",
     "android",
     "android-widget",
     "widget",

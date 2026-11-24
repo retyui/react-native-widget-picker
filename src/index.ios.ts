@@ -1,5 +1,6 @@
 import { WidgetPickerErrorCode } from "./types";
-import type { WidgetPickerApi } from "./types";
+import NativeWidgetPickerIOS from "./NativeWidgetPickerIOS";
+import type { WidgetConfiguration, WidgetPickerApi } from "./types";
 
 export * from "./types";
 
@@ -15,4 +16,8 @@ export const WidgetPicker: WidgetPickerApi = {
   requestPinAppWidget: notSupported,
   getPinnedWidgetIds: () => Promise.resolve([]),
   isWidgetPinned: () => Promise.resolve(false),
+  getCurrentWidgetConfigurations: () =>
+    NativeWidgetPickerIOS.getCurrentWidgetConfigurations() as Promise<
+      WidgetConfiguration[]
+    >,
 };

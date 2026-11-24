@@ -6,6 +6,21 @@ export type PinWidgetOptions = {
   previewLayout?: string;
 };
 
+/** A widget of this app the user added (Home Screen, Lock Screen, StandBy). */
+export type WidgetConfiguration = {
+  /** The widget's `kind` string from its `WidgetConfiguration` */
+  kind: string;
+  family:
+    | "systemSmall"
+    | "systemMedium"
+    | "systemLarge"
+    | "systemExtraLarge"
+    | "accessoryCircular"
+    | "accessoryRectangular"
+    | "accessoryInline"
+    | (string & {});
+};
+
 export type PinWidgetResult =
   { status: "pinned"; appWidgetId: number } | { status: "cancelled" };
 
@@ -19,6 +34,8 @@ export const WidgetPickerErrorCode = {
   INVALID_PREVIEW: "E_INVALID_PREVIEW",
   /** The launcher refused the request */
   PIN_FAILED: "E_PIN_FAILED",
+  /** iOS: WidgetKit failed to return the current widgets */
+  GET_WIDGETS_FAILED: "E_GET_WIDGETS_FAILED",
 } as const;
 
 export type WidgetPickerErrorCode =
@@ -37,4 +54,9 @@ export interface WidgetPickerApi {
   /** IDs of this widget's instances currently on the home screen. */
   getPinnedWidgetIds(widgetClassKey: string): Promise<number[]>;
   isWidgetPinned(widgetClassKey: string): Promise<boolean>;
+  /**
+   * iOS only: widgets of this app the user has added.
+   * Rejects with `NOT_SUPPORTED` on Android.
+   */
+  getCurrentWidgetConfigurations(): Promise<WidgetConfiguration[]>;
 }

@@ -6,6 +6,9 @@ on:
     paths: &paths
       - "src/**"
       - "android/**"
+      - "ios/**"
+      - "Package.swift"
+      - "*.podspec"
       - "package.json"
       - "yarn.lock"
       - ".yarnrc.yml"
@@ -104,3 +107,28 @@ jobs:
           rn-ver: ${{ matrix.rn_ver }}
           new-arch-enabled: 1
           android-arch: x86_64
+
+  build_ios:
+    name: Build iOS RN@${{ matrix.rn_ver }} (${{ matrix.ios_package_manager }})
+    needs: [lint_js]
+    strategy:
+      fail-fast: false
+      matrix:
+        rn_ver: [latest]
+        ios_package_manager: [pods, spm]
+
+    runs-on: macos-15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 1
+
+      - name: Build iOS App
+        uses: retyui/oss-react-native-build/build-app@v0
+        with:
+          platform: ios
+          rn-ver: ${{ matrix.rn_ver }}
+          new-arch-enabled: 1
+          ios-package-manager: ${{ matrix.ios_package_manager }}
