@@ -27,7 +27,10 @@
     "after-build": "prettier --write ./dist --ignore-path .skip",
     "lint:android": "./android/gradlew -p android spotlessCheck --quiet",
     "format:android": "./android/gradlew -p android spotlessapply",
-    "prepublishOnly": "yarn build"
+    "prepublishOnly": "yarn build",
+    "changeset": "changeset",
+    "version-packages": "changeset version && yarn install --mode=update-lockfile",
+    "release": "yarn build && changeset publish"
   },
   "author": "David <4661784+retyui@users.noreply.github.com>",
   "description": "Request to pin an app widget on the current launcher",
@@ -53,6 +56,8 @@
     }
   },
   "devDependencies": {
+    "@changesets/changelog-github": "^1.0.1",
+    "@changesets/cli": "^3.0.3",
     "@types/react": "^19.3.0",
     "prettier": "^3.9.10",
     "react": "^19.3.0",
@@ -69,5 +74,8 @@
     "home-screen",
     "home-screen-widget"
   ],
-  "packageManager": "yarn@4.18.1"
+  "packageManager": "yarn@4.18.1",
+  "publishConfig": {
+    "access": "public"
+  }
 }

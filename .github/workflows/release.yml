@@ -1,0 +1,67 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - main
+
+concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+permissions:
+  contents: write # push the version commit and create the GitHub release
+  pull-requests: write # open the "chore: version packages" PR
+  id-token: write # npm provenance / trusted publishing
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - run: corepack enable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+
+      - run: yarn install --immutable
+
+      - name: Create release PR or publish to npm
+        id: changesets
+        uses: changesets/action@v2
+        with:
+          version-script: yarn version-packages
+          publish-script: yarn release
+          commit-message: "chore: version packages"
+          pr-title: "chore: version packages"
+          create-github-releases: false
+          push-git-tags: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          YARN_NPM_PUBLISH_PROVENANCE: "true"
+
+      - name: Create GitHub release
+        if: steps.changesets.outputs.published == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          PREV_TAG=$(gh release view --json tagName --jq .tagName 2>/dev/null || true)
+
+          # Pull the "## <version>" section out of CHANGELOG.md
+          awk -v v="## $VERSION" '$0 == v { f = 1; next } /^## / { f = 0 } f' CHANGELOG.md > notes.md
+
+          if [ -n "$PREV_TAG" ]; then
+            printf '\n**Full Changelog**: https://github.com/%s/compare/%s...%s\n' \
+              "$GITHUB_REPOSITORY" "$PREV_TAG" "$VERSION" >> notes.md
+          fi
+
+          gh release create "$VERSION" \
+            --target "$GITHUB_SHA" \
+            --title "Release $VERSION" \
+            --notes-file notes.md
