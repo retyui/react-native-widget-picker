@@ -59,6 +59,9 @@ jobs:
           if [ -n "$PREV_TAG" ]; then
             printf '\n**Full Changelog**: https://github.com/%s/compare/%s...%s\n' \
               "$GITHUB_REPOSITORY" "$PREV_TAG" "$VERSION" >> notes.md
+            NAME=$(node -p "require('./package.json').name")
+            printf '\n**NPM Diff**: [%s...%s](https://npmfs.com/compare/%s/%s/%s/)\n' \
+              "$PREV_TAG" "$VERSION" "$NAME" "$PREV_TAG" "$VERSION" >> notes.md
           fi
 
           gh release create "$VERSION" \
