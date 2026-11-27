@@ -1,16 +1,30 @@
 name: Build Android App
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [main]
+    paths: &paths
+      - "src/**"
+      - "android/**"
+      - "package.json"
+      - "yarn.lock"
+      - ".yarnrc.yml"
+      - ".yarn/**"
+      - "tsconfig*.json"
+      - ".github/workflows/build_android.yaml"
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths: *paths
 
 permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  # One run per PR (or per branch on push); a new commit cancels the running one
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 env:
-  RN_APP_NAME: MyApp
   JAVA_VERSION: 21
   NODE_VERSION: 24
 
@@ -73,7 +87,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        rn_ver: [0.89.0-rc.0, 0.88.1, 0.87.1, 0.86.3, 0.85.3, 0.84.1, 0.83.10, 0.82.1, 0.81.6, 0.80.3]
+        rn_ver: [latest]
 
     runs-on: ubuntu-latest
 
@@ -83,36 +97,10 @@ jobs:
         with:
           fetch-depth: 1
 
-      - name: Setup Java
-        uses: actions/setup-java@v6
-        with:
-          distribution: temurin
-          java-version: ${{ env.JAVA_VERSION }}
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v6
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v7
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Create Tmp React Native App
-        working-directory: /tmp
-        run: |
-          # Create new tmp React Native
-          npx @react-native-community/cli@latest init "$RN_APP_NAME" --version ${{ matrix.rn_ver }} --skip-git-init --install-pods false
-          cd "$RN_APP_NAME"
-
-          # Install my module
-          yarn add "file:${{ github.workspace }}"
-
-          # Debug info
-          npx react-native info
-
-          # Make sure new arch is enabled (it is opt-out on RN < 0.82)
-          sed -i 's/newArchEnabled=false/newArchEnabled=true/' android/gradle.properties
-
       - name: Build Android App
-        working-directory: /tmp/${{ env.RN_APP_NAME }}
-        run: ./android/gradlew -p android assembleRelease -PreactNativeArchitectures=x86_64
+        uses: retyui/oss-react-native-build/build-app@v0
+        with:
+          platform: android
+          rn-ver: ${{ matrix.rn_ver }}
+          new-arch-enabled: 1
+          android-arch: x86_64
