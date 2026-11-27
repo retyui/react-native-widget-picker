@@ -12,14 +12,22 @@ https://github.com/retyui/react-native-detect-maestro/assets/4661784/e301602d-d8
 
 ## Getting started
 
-* Android only
+* Android: pin widgets and read pinned widget IDs
+* iOS 14+: read which widgets the user added (`getCurrentWidgetConfigurations`)
 * React Native's New Architecture only (RN 0.80+). Use `1.x` for the old architecture
 
 ```shell
 yarn add react-native-widget-picker
 # or
 npm install react-native-widget-picker
+# iOS
+cd ios && pod install
 ```
+
+> [!NOTE]
+> **Swift Package Manager**: on React Native 0.87+ you can build iOS with SPM instead of CocoaPods.
+> Once your app uses React Native's SPM integration, the autolinker picks up this library's
+> `Package.swift` automatically.
 
 That's it: widgets are found by their `AppWidgetProvider` class name (simple or fully
 qualified), e.g. `"MyAppWidget"` or `"com.myapp.MyAppWidget"`.
@@ -79,6 +87,21 @@ await WidgetPicker.getPinnedWidgetIds("MyAppWidget"); // [12, 15]
 The promise resolves when the user adds the widget or closes the dialog. If the user drags the
 widget onto the home screen instead, it resolves once the widget is placed or the app is back in
 the foreground.
+
+### iOS
+
+iOS has no API to pin a widget, but you can read the widgets of your app the user has added
+(Home Screen, Lock Screen, StandBy):
+
+```tsx
+const widgets = await WidgetPicker.getCurrentWidgetConfigurations();
+// [{ kind: "WeatherWidget", family: "systemSmall" }, { kind: "WeatherWidget", family: "accessoryCircular" }]
+
+const hasWeatherWidget = widgets.some((w) => w.kind === "WeatherWidget");
+```
+
+`kind` is the string passed to your widget's `StaticConfiguration`/`AppIntentConfiguration`.
+On Android this method rejects with `WidgetPickerErrorCode.NOT_SUPPORTED`.
 
 ## Migrating from 1.x
 

@@ -1,4 +1,5 @@
-import NativeWidgetPicker from "./NativeWidgetPickerModule";
+import NativeWidgetPicker from "./NativeWidgetPickerModule.android";
+import { WidgetPickerErrorCode } from "./types";
 import type { PinWidgetResult, WidgetPickerApi } from "./types";
 
 export * from "./types";
@@ -15,4 +16,10 @@ export const WidgetPicker: WidgetPickerApi = {
     NativeWidgetPicker.getPinnedWidgetIds(widgetClassKey),
   isWidgetPinned: async (widgetClassKey) =>
     (await NativeWidgetPicker.getPinnedWidgetIds(widgetClassKey)).length > 0,
+  getCurrentWidgetConfigurations: () =>
+    Promise.reject(
+      Object.assign(new Error("getCurrentWidgetConfigurations is iOS only"), {
+        code: WidgetPickerErrorCode.NOT_SUPPORTED,
+      }),
+    ),
 };
